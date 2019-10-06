@@ -1,4 +1,4 @@
-package br.com.alura.financask
+package br.com.bspicinini.financask
 
 import org.junit.Test
 
