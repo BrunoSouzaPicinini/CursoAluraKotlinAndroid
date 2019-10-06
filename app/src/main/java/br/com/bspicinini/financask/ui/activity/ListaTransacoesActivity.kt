@@ -26,6 +26,11 @@ class ListaTransacoesActivity : AppCompatActivity() {
                 BigDecimal(100),
                 "Economia",
                 Tipo.RECEITA
+            ),
+            Transacao(
+                BigDecimal(10),
+                "FGTS resgate anual",
+                Tipo.RECEITA
             )
         )
 
