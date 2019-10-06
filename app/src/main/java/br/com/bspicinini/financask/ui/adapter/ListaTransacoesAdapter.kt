@@ -6,9 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import br.com.bspicinini.financask.R
+import br.com.bspicinini.financask.extension.formataParaBrasileiro
 import br.com.bspicinini.financask.model.Transacao
 import kotlinx.android.synthetic.main.transacao_item.view.*
-import java.text.SimpleDateFormat
 
 class ListaTransacoesAdapter(
     transacoes: List<Transacao>,
@@ -25,9 +25,7 @@ class ListaTransacoesAdapter(
         viewCriada.transacao_valor.text = transacao.valor.toString()
         viewCriada.transacao_categoria.text = transacao.categoria
 
-        val format = SimpleDateFormat("dd/MM/yyyy")
-
-        viewCriada.transacao_data.text = format.format(transacao.data.time)
+        viewCriada.transacao_data.text = transacao.data.formataParaBrasileiro()
 
         return viewCriada
     }
