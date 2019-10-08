@@ -1,5 +1,6 @@
 package br.com.bspicinini.financask.ui.adapter
 
+
 import android.content.Context
 import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
@@ -12,13 +13,14 @@ import br.com.bspicinini.financask.extension.limitaEmAte
 import br.com.bspicinini.financask.model.Tipo
 import br.com.bspicinini.financask.model.Transacao
 import kotlinx.android.synthetic.main.transacao_item.view.*
-
 class ListaTransacoesAdapter(
     private val transacoes: List<Transacao>,
     private val context: Context
 ) : BaseAdapter() {
 
     private val limiteDaCategoria = 14
+    private val corReceita = ContextCompat.getColor(context, R.color.receita)
+    private val corDespesa = ContextCompat.getColor(context, R.color.despesa)
 
     override fun getView(posicao: Int, view: View?, parent: ViewGroup?): View {
         val viewCriada = LayoutInflater.from(context).inflate(R.layout.transacao_item, parent, false)
@@ -50,9 +52,9 @@ class ListaTransacoesAdapter(
 
     private fun corPor(tipo: Tipo): Int {
         if (tipo == Tipo.RECEITA)
-            return ContextCompat.getColor(context, R.color.receita)
+            return corReceita
 
-        return ContextCompat.getColor(context, R.color.despesa)
+        return corDespesa
     }
 
     private fun adicionaIcone(transacao: Transacao, viewCriada: View) {

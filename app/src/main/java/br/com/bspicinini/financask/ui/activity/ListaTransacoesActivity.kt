@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity
 import br.com.bspicinini.financask.R
 import br.com.bspicinini.financask.model.Tipo
 import br.com.bspicinini.financask.model.Transacao
+import br.com.bspicinini.financask.ui.ResumoView
 import br.com.bspicinini.financask.ui.adapter.ListaTransacoesAdapter
 import kotlinx.android.synthetic.main.activity_lista_transacoes.*
 import java.math.BigDecimal
@@ -18,7 +19,15 @@ class ListaTransacoesActivity : AppCompatActivity() {
 
         val transacoes: List<Transacao> = transacoesExemplo()
 
+        configuraResumo(transacoes)
         configuraLista(transacoes)
+    }
+
+    private fun configuraResumo(transacoes: List<Transacao>) {
+        val resumoView = ResumoView(this, window.decorView, transacoes)
+        resumoView.adicionaReceita()
+        resumoView.adicionaDespesa()
+        resumoView.adicionaTotal()
     }
 
     private fun configuraLista(transacoes: List<Transacao>) {
