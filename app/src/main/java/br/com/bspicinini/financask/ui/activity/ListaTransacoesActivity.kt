@@ -25,9 +25,7 @@ class ListaTransacoesActivity : AppCompatActivity() {
 
     private fun configuraResumo(transacoes: List<Transacao>) {
         val resumoView = ResumoView(this, window.decorView, transacoes)
-        resumoView.adicionaReceita()
-        resumoView.adicionaDespesa()
-        resumoView.adicionaTotal()
+        resumoView.atualiza()
     }
 
     private fun configuraLista(transacoes: List<Transacao>) {
@@ -37,7 +35,7 @@ class ListaTransacoesActivity : AppCompatActivity() {
     private fun transacoesExemplo(): List<Transacao> {
         return listOf(
             Transacao(
-                BigDecimal(20.50),
+                BigDecimal(2000.50),
                 tipo = Tipo.DESPESA,
                 data = Calendar.getInstance()
             ),
