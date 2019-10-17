@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.DatePicker
 import br.com.bspicinini.financask.R
 import br.com.bspicinini.financask.extension.formataParaBrasileiro
 import br.com.bspicinini.financask.model.Tipo
@@ -17,18 +16,19 @@ import br.com.bspicinini.financask.ui.adapter.ListaTransacoesAdapter
 import kotlinx.android.synthetic.main.activity_lista_transacoes.*
 import kotlinx.android.synthetic.main.form_transacao.view.*
 import java.math.BigDecimal
+import java.text.SimpleDateFormat
 import java.util.*
 
 class ListaTransacoesActivity : AppCompatActivity() {
+
+    private val transacoes: MutableList<Transacao> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lista_transacoes)
 
-        val transacoes: List<Transacao> = transacoesExemplo()
-
-        configuraResumo(transacoes)
-        configuraLista(transacoes)
+        configuraResumo()
+        configuraLista()
 
         val viewCriada = LayoutInflater
             .from(this)
@@ -38,58 +38,70 @@ class ListaTransacoesActivity : AppCompatActivity() {
                 false
             )
         with(viewCriada.form_transacao_data) {
-            setText(Calendar.getInstance().formataParaBrasileiro())
+            var dataSelecionada = Calendar.getInstance()
+            setText(dataSelecionada.formataParaBrasileiro())
             setOnClickListener {
                 DatePickerDialog(this@ListaTransacoesActivity,
                     DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
-                        val dataSelecionada = Calendar.getInstance()
+
                         dataSelecionada.set(year, month, dayOfMonth)
                         viewCriada.form_transacao_data.setText(dataSelecionada.formataParaBrasileiro())
-                    }, 2017, 9, 1)
+                    }, dataSelecionada.get(Calendar.YEAR), dataSelecionada.get(Calendar.MONTH), dataSelecionada.get(Calendar.DAY_OF_MONTH)
+                )
                     .show()
             }
         }
 
-        val adapter = ArrayAdapter.createFromResource(this, R.array.categorias_de_receita,android.R.layout.simple_spinner_dropdown_item)
+        val adapter = ArrayAdapter.createFromResource(
+            this,
+            R.array.categorias_de_receita,
+            android.R.layout.simple_spinner_dropdown_item
+        )
         viewCriada.form_transacao_categoria.adapter = adapter
 
         lista_transacoes_adiciona_receita.setOnClickListener {
             AlertDialog.Builder(this)
                 .setTitle(R.string.adiciona_receita)
                 .setView(viewCriada)
-                .setPositiveButton("Adicionar", null)
+                .setPositiveButton(
+                    "Adicionar"
+                ) { dialogInterface, i ->
+
+                    val valor = BigDecimal(viewCriada.form_transacao_valor.text.toString())
+                    val dataConvertida =
+                        SimpleDateFormat("dd/MM/yyyy").parse(viewCriada.form_transacao_data.text.toString())
+                    val data = Calendar.getInstance()
+                    data.time = dataConvertida
+                    val categoriaEmTexto = viewCriada.form_transacao_categoria.selectedItem.toString()
+
+                    val transacaoCriada =
+                        Transacao(tipo = Tipo.RECEITA, valor = valor, data = data, categoria = categoriaEmTexto)
+
+                    atualizaTransacoes(transacaoCriada)
+                    lista_transacoes_adiciona_menu.close(true)
+                }
                 .setNegativeButton("Cancelar", null)
                 .show()
         }
     }
 
-    private fun configuraResumo(transacoes: List<Transacao>) {
+    private fun atualizaTransacoes(transacao: Transacao) {
+        transacoes.add(transacao)
+        atualizaTransacoes()
+    }
+
+    private fun atualizaTransacoes() {
+        configuraResumo()
+        configuraLista()
+    }
+
+    private fun configuraResumo() {
         val resumoView = ResumoView(this, window.decorView, transacoes)
         resumoView.atualiza()
     }
 
-    private fun configuraLista(transacoes: List<Transacao>) {
+    private fun configuraLista() {
         lista_transacoes_listview.adapter = ListaTransacoesAdapter(transacoes, this)
-    }
-
-    private fun transacoesExemplo(): List<Transacao> {
-        return listOf(
-            Transacao(
-                BigDecimal(2000.50),
-                tipo = Tipo.DESPESA,
-                data = Calendar.getInstance()
-            ),
-            Transacao(
-                BigDecimal(100),
-                "Economia",
-                Tipo.RECEITA
-            ),
-            Transacao(
-                BigDecimal(10),
-                "FGTS resgate anual",
-                Tipo.RECEITA
-            )
-        )
     }
 
 }
