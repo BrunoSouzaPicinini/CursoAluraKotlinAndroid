@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import br.com.bspicinini.financask.R
 import br.com.bspicinini.financask.extension.formataParaBrasileiro
 import br.com.bspicinini.financask.model.Tipo
@@ -41,12 +42,16 @@ class ListaTransacoesActivity : AppCompatActivity() {
             var dataSelecionada = Calendar.getInstance()
             setText(dataSelecionada.formataParaBrasileiro())
             setOnClickListener {
-                DatePickerDialog(this@ListaTransacoesActivity,
+                DatePickerDialog(
+                    this@ListaTransacoesActivity,
                     DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
 
                         dataSelecionada.set(year, month, dayOfMonth)
                         viewCriada.form_transacao_data.setText(dataSelecionada.formataParaBrasileiro())
-                    }, dataSelecionada.get(Calendar.YEAR), dataSelecionada.get(Calendar.MONTH), dataSelecionada.get(Calendar.DAY_OF_MONTH)
+                    },
+                    dataSelecionada.get(Calendar.YEAR),
+                    dataSelecionada.get(Calendar.MONTH),
+                    dataSelecionada.get(Calendar.DAY_OF_MONTH)
                 )
                     .show()
             }
@@ -67,7 +72,14 @@ class ListaTransacoesActivity : AppCompatActivity() {
                     "Adicionar"
                 ) { dialogInterface, i ->
 
-                    val valor = BigDecimal(viewCriada.form_transacao_valor.text.toString())
+                    val valor = try {
+                        BigDecimal(viewCriada.form_transacao_valor.text.toString())
+                    } catch (e: NumberFormatException) {
+                        Toast.makeText(this,
+                            "Falha na conversão de valor",
+                            Toast.LENGTH_LONG).show()
+                        BigDecimal.ZERO
+                    }
                     val dataConvertida =
                         SimpleDateFormat("dd/MM/yyyy").parse(viewCriada.form_transacao_data.text.toString())
                     val data = Calendar.getInstance()
