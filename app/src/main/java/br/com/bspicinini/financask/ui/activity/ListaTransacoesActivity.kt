@@ -1,25 +1,15 @@
 package br.com.bspicinini.financask.ui.activity
 
-import android.app.AlertDialog
-import android.app.DatePickerDialog
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.Toast
 import br.com.bspicinini.financask.R
-import br.com.bspicinini.financask.extension.formataParaBrasileiro
-import br.com.bspicinini.financask.model.Tipo
+import br.com.bspicinini.financask.delegate.TransacaoDelegate
 import br.com.bspicinini.financask.model.Transacao
 import br.com.bspicinini.financask.ui.ResumoView
 import br.com.bspicinini.financask.ui.adapter.ListaTransacoesAdapter
 import br.com.bspicinini.financask.ui.dialog.AdicionaTransacaoDialog
 import kotlinx.android.synthetic.main.activity_lista_transacoes.*
-import kotlinx.android.synthetic.main.form_transacao.view.*
-import java.math.BigDecimal
-import java.text.SimpleDateFormat
-import java.util.*
 
 class ListaTransacoesActivity : AppCompatActivity() {
 
@@ -39,7 +29,13 @@ class ListaTransacoesActivity : AppCompatActivity() {
     }
 
     private fun configuraDialog() {
-        AdicionaTransacaoDialog().configuraDialog()
+        AdicionaTransacaoDialog(window.decorView as ViewGroup, this)
+            .configuraDialog(object : TransacaoDelegate {
+                override fun delegate(transacao: Transacao) {
+                    atualizaTransacoes(transacao)
+                    lista_transacoes_adiciona_menu.close(true)
+                }
+            })
     }
 
     private fun atualizaTransacoes(transacao: Transacao) {

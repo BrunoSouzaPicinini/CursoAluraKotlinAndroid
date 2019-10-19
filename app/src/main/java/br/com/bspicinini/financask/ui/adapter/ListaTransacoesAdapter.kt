@@ -13,6 +13,7 @@ import br.com.bspicinini.financask.extension.limitaEmAte
 import br.com.bspicinini.financask.model.Tipo
 import br.com.bspicinini.financask.model.Transacao
 import kotlinx.android.synthetic.main.transacao_item.view.*
+
 class ListaTransacoesAdapter(
     private val transacoes: List<Transacao>,
     private val context: Context

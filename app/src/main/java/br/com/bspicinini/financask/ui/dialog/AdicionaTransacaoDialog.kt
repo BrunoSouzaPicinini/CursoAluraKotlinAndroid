@@ -9,13 +9,13 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import br.com.bspicinini.financask.R
+import br.com.bspicinini.financask.delegate.TransacaoDelegate
 import br.com.bspicinini.financask.extension.converteParaCalendar
 import br.com.bspicinini.financask.extension.formataParaBrasileiro
 import br.com.bspicinini.financask.model.Tipo
 import br.com.bspicinini.financask.model.Transacao
 import kotlinx.android.synthetic.main.form_transacao.view.*
 import java.math.BigDecimal
-import java.text.SimpleDateFormat
 import java.util.*
 
 class AdicionaTransacaoDialog(
@@ -24,13 +24,13 @@ class AdicionaTransacaoDialog(
 ) {
     private val viewCriada = criaLayout()
 
-    fun configuraDialog() {
+    fun configuraDialog(transacaoDelegate: TransacaoDelegate) {
         configuraCampoData()
         configuraCampoCategoria()
-        configuraFormulario()
+        configuraFormulario(transacaoDelegate)
     }
 
-    private fun configuraFormulario() {
+    private fun configuraFormulario(transacaoDelegate: TransacaoDelegate) {
         AlertDialog.Builder(context)
             .setTitle(R.string.adiciona_receita)
             .setView(viewCriada)
@@ -38,7 +38,7 @@ class AdicionaTransacaoDialog(
                 "Adicionar"
             ) { _, _ ->
 
-                val valor = converteCampoValor(viewCriada.form_transacao_valor.text.toString() )
+                val valor = converteCampoValor(viewCriada.form_transacao_valor.text.toString())
 
                 val data = viewCriada.form_transacao_data.text.toString().converteParaCalendar()
 
@@ -47,8 +47,7 @@ class AdicionaTransacaoDialog(
                 val transacaoCriada =
                     Transacao(tipo = Tipo.RECEITA, valor = valor, data = data, categoria = categoriaEmTexto)
 
-                atualizaTransacoes(transacaoCriada)
-                lista_transacoes_adiciona_menu.close(true)
+                transacaoDelegate.delegate(transacaoCriada)
             }
             .setNegativeButton("Cancelar", null)
             .show()
@@ -83,7 +82,6 @@ class AdicionaTransacaoDialog(
             DatePickerDialog(
                 context,
                 DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
-
                     dataSelecionada.set(year, month, dayOfMonth)
                     viewCriada.form_transacao_data.setText(dataSelecionada.formataParaBrasileiro())
                 },

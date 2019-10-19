@@ -3,8 +3,8 @@ package br.com.bspicinini.financask.extension
 import java.text.SimpleDateFormat
 import java.util.*
 
-fun String.limitaEmAte(caracteres: Int) : String {
-    if(this.length > caracteres) {
+fun String.limitaEmAte(caracteres: Int): String {
+    if (this.length > caracteres) {
         val primeiroCaracter = 0
         return "${this.substring(primeiroCaracter, caracteres)}..."
     }
