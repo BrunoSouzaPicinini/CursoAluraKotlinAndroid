@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.ViewGroup
 import br.com.bspicinini.financask.R
 import br.com.bspicinini.financask.delegate.TransacaoDelegate
+import br.com.bspicinini.financask.model.Tipo
 import br.com.bspicinini.financask.model.Transacao
 import br.com.bspicinini.financask.ui.ResumoView
 import br.com.bspicinini.financask.ui.adapter.ListaTransacoesAdapter
@@ -21,21 +22,29 @@ class ListaTransacoesActivity : AppCompatActivity() {
 
         configuraResumo()
         configuraLista()
-
-        lista_transacoes_adiciona_receita
-            .setOnClickListener {
-                configuraDialog()
-            }
+        configuraFab()
     }
 
-    private fun configuraDialog() {
-        AdicionaTransacaoDialog(window.decorView as ViewGroup, this)
-            .configuraDialog(object : TransacaoDelegate {
-                override fun delegate(transacao: Transacao) {
-                    atualizaTransacoes(transacao)
-                    lista_transacoes_adiciona_menu.close(true)
+    private fun configuraFab() {
+        lista_transacoes_adiciona_receita
+                .setOnClickListener {
+                    configuraDialog(Tipo.RECEITA)
                 }
-            })
+
+        lista_transacoes_adiciona_despesa
+                .setOnClickListener {
+                    configuraDialog(Tipo.DESPESA)
+                }
+    }
+
+    private fun configuraDialog(tipo: Tipo) {
+        AdicionaTransacaoDialog(window.decorView as ViewGroup, this)
+                .chama(tipo, object : TransacaoDelegate {
+                    override fun delegate(transacao: Transacao) {
+                        atualizaTransacoes(transacao)
+                        lista_transacoes_adiciona_menu.close(true)
+                    }
+                })
     }
 
     private fun atualizaTransacoes(transacao: Transacao) {
