@@ -18,7 +18,8 @@ import br.com.bspicinini.financask.model.Transacao
 import kotlinx.android.synthetic.main.form_transacao.view.*
 import java.math.BigDecimal
 import java.util.*
-class AdicionaTransacaoDialog(
+
+class AlteraTransacaoDialog(
         private val viewGroup: ViewGroup,
         private val context: Context
 ) {
@@ -28,21 +29,24 @@ class AdicionaTransacaoDialog(
     private val campoData = viewCriada.form_transacao_data
     private val campoCategoria = viewCriada.form_transacao_categoria
 
-    fun chama(tipo: Tipo, transacaoDelegate: TransacaoDelegate) {
+    fun chama(transacao: Transacao, transacaoDelegate: TransacaoDelegate) {
         configuraCampoData()
-        configuraCampoCategoria(tipo)
-        configuraFormulario(tipo, transacaoDelegate)
+        configuraCampoCategoria(transacao.tipo)
+        configuraFormulario(transacao, transacaoDelegate)
     }
 
-    private fun configuraFormulario(tipo: Tipo, transacaoDelegate: TransacaoDelegate) {
-
-        val tituloTransacao = tituloPor(tipo)
+    private fun configuraFormulario(transacao: Transacao, transacaoDelegate: TransacaoDelegate) {
+        val tituloTransacao = tituloPor(transacao.tipo)
+        campoValor.setText(transacao.valor.toString())
+        campoData.setText(transacao.data.formataParaBrasileiro())
+        val categoriasRetornadas = context.resources.getStringArray(categoriaPor(transacao.tipo))
+        campoCategoria.setSelection(categoriasRetornadas.indexOf(transacao.categoria), true)
 
         AlertDialog.Builder(context)
                 .setTitle(tituloTransacao)
                 .setView(viewCriada)
                 .setPositiveButton(
-                        "Adicionar"
+                        "Alterar"
                 ) { _, _ ->
 
                     val valor = converteCampoValor(campoValor.text.toString())
@@ -52,7 +56,7 @@ class AdicionaTransacaoDialog(
                     val categoriaEmTexto = campoCategoria.selectedItem.toString()
 
                     val transacaoCriada =
-                            Transacao(tipo = tipo, valor = valor, data = data, categoria = categoriaEmTexto)
+                            Transacao(tipo = transacao.tipo, valor = valor, data = data, categoria = categoriaEmTexto)
 
                     transacaoDelegate.delegate(transacaoCriada)
                 }
@@ -60,7 +64,7 @@ class AdicionaTransacaoDialog(
                 .show()
     }
 
-    private fun tituloPor(tipo: Tipo) = if (tipo == Tipo.RECEITA) R.string.adiciona_receita else R.string.adiciona_despesa
+    private fun tituloPor(tipo: Tipo) = if (tipo == Tipo.RECEITA) R.string.altera_receita else R.string.altera_despesa
 
     private fun categoriaPor(tipo: Tipo) = if (tipo == Tipo.RECEITA) R.array.categorias_de_receita else R.array.categorias_de_despesa;
 
