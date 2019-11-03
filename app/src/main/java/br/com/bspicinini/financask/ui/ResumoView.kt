@@ -11,9 +11,9 @@ import kotlinx.android.synthetic.main.resumo_card.view.*
 import java.math.BigDecimal
 
 class ResumoView(
-    private val context: Context,
+    context: Context,
     private val view: View,
-    val transacoes: List<Transacao>
+    transacoes: List<Transacao>
 ) {
 
     private val resumo = Resumo(transacoes)
@@ -43,6 +43,7 @@ class ResumoView(
     private fun adicionaTotal() {
         val total = resumo.total
         val cor = corPor(total)
+
         with(view.resumo_card_total) {
             setTextColor(cor)
             text = total.formataParaBrasileiro()
