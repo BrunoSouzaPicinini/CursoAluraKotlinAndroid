@@ -2,10 +2,8 @@ package br.com.bspicinini.financask.ui.activity
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.view.View
 import android.view.ViewGroup
 import br.com.bspicinini.financask.R
-import br.com.bspicinini.financask.delegate.TransacaoDelegate
 import br.com.bspicinini.financask.model.Tipo
 import br.com.bspicinini.financask.model.Transacao
 import br.com.bspicinini.financask.ui.ResumoView
@@ -35,33 +33,29 @@ class ListaTransacoesActivity : AppCompatActivity() {
 
     private fun configuraFab() {
         lista_transacoes_adiciona_receita
-            .setOnClickListener {
-                chamaDialogDeAdicao(Tipo.RECEITA)
-            }
+                .setOnClickListener {
+                    chamaDialogDeAdicao(Tipo.RECEITA)
+                }
 
         lista_transacoes_adiciona_despesa
-            .setOnClickListener {
-                chamaDialogDeAdicao(Tipo.DESPESA)
-            }
+                .setOnClickListener {
+                    chamaDialogDeAdicao(Tipo.DESPESA)
+                }
     }
 
     private fun chamaDialogDeAdicao(tipo: Tipo) {
         AdicionaTransacaoDialog(viewGroupDaActivity, this)
-            .chama(tipo, object : TransacaoDelegate {
-                override fun delegate(transacao: Transacao) {
-                    adiciona(transacao)
+                .chama(tipo) { transacaoAdicao ->
+                    adiciona(transacaoAdicao)
                     lista_transacoes_adiciona_menu.close(true)
                 }
-            })
     }
 
     private fun chamaDialogDeAlteracao(transacao: Transacao, position: Int) {
         AlteraTransacaoDialog(viewGroupDaActivity, this)
-            .chama(transacao, object : TransacaoDelegate {
-                override fun delegate(transacao: Transacao) {
-                    altera(transacao, position)
+                .chama(transacao) { transacaoAlteracao ->
+                    altera(transacaoAlteracao, position)
                 }
-            })
     }
 
     private fun adiciona(transacao: Transacao) {

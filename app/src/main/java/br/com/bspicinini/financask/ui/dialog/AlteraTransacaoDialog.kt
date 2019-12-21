@@ -4,20 +4,19 @@ package br.com.bspicinini.financask.ui.dialog
 import android.content.Context
 import android.view.ViewGroup
 import br.com.bspicinini.financask.R
-import br.com.bspicinini.financask.delegate.TransacaoDelegate
 import br.com.bspicinini.financask.extension.formataParaBrasileiro
 import br.com.bspicinini.financask.model.Tipo
 import br.com.bspicinini.financask.model.Transacao
 
 class AlteraTransacaoDialog(
-    viewGroup: ViewGroup,
-    private val context: Context
+        viewGroup: ViewGroup,
+        private val context: Context
 ) : FormularioTransacaoDialog(viewGroup, context) {
 
     override val tituloBotaoPositivo = "Alterar"
 
-    fun chama(transacao: Transacao, transacaoDelegate: TransacaoDelegate) {
-        super.chama(transacao.tipo, transacaoDelegate)
+    fun chama(transacao: Transacao, delegate: (transacao: Transacao) -> Unit) {
+        super.chama(transacao.tipo, delegate)
 
         inicializaCampos(transacao)
     }
