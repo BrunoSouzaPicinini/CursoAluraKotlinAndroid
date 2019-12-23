@@ -2,7 +2,10 @@ package br.com.bspicinini.financask.ui.activity
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.Menu
+import android.view.MenuItem
 import android.view.ViewGroup
+import android.widget.AdapterView
 import br.com.bspicinini.financask.R
 import br.com.bspicinini.financask.model.Tipo
 import br.com.bspicinini.financask.model.Transacao
@@ -86,6 +89,21 @@ class ListaTransacoesActivity : AppCompatActivity() {
                 val transacao = transacoes[position]
                 chamaDialogDeAlteracao(transacao, position)
             }
+
+            setOnCreateContextMenuListener { menu, view, menuInfo ->
+                menu.add(Menu.NONE, 1, Menu.NONE, "Excluir")
+            }
         }
+    }
+
+    override fun onContextItemSelected(item: MenuItem?): Boolean {
+        var idMenu = item?.itemId
+        if (idMenu == 1) {
+            val adapterMenuInfo = item?.menuInfo as AdapterView.AdapterContextMenuInfo
+            val posicaoDaTransacao = adapterMenuInfo.position
+            transacoes.removeAt(posicaoDaTransacao)
+            atualizaTransacoes()
+        }
+        return super.onContextItemSelected(item)
     }
 }
