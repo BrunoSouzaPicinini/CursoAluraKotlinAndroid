@@ -90,8 +90,8 @@ class ListaTransacoesActivity : AppCompatActivity() {
                 chamaDialogDeAlteracao(transacao, position)
             }
 
-            setOnCreateContextMenuListener { menu, view, menuInfo ->
-                menu.add(Menu.NONE, 1, Menu.NONE, "Excluir")
+            setOnCreateContextMenuListener { menu, _, _ ->
+                menu.add(Menu.NONE, 1, Menu.NONE, "Remove")
             }
         }
     }
@@ -100,10 +100,13 @@ class ListaTransacoesActivity : AppCompatActivity() {
         var idMenu = item?.itemId
         if (idMenu == 1) {
             val adapterMenuInfo = item?.menuInfo as AdapterView.AdapterContextMenuInfo
-            val posicaoDaTransacao = adapterMenuInfo.position
-            transacoes.removeAt(posicaoDaTransacao)
-            atualizaTransacoes()
+            remove(adapterMenuInfo.position)
         }
         return super.onContextItemSelected(item)
+    }
+
+    private fun remove(posicaoDaTransacao: Int) {
+        transacoes.removeAt(posicaoDaTransacao)
+        atualizaTransacoes()
     }
 }
