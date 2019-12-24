@@ -7,6 +7,7 @@ import android.view.MenuItem
 import android.view.ViewGroup
 import android.widget.AdapterView
 import br.com.bspicinini.financask.R
+import br.com.bspicinini.financask.dao.TransacaoDao
 import br.com.bspicinini.financask.model.Tipo
 import br.com.bspicinini.financask.model.Transacao
 import br.com.bspicinini.financask.ui.ResumoView
@@ -17,7 +18,8 @@ import kotlinx.android.synthetic.main.activity_lista_transacoes.*
 
 class ListaTransacoesActivity : AppCompatActivity() {
 
-    private val transacoes: MutableList<Transacao> = mutableListOf()
+    private val dao = TransacaoDao()
+    private val transacoes = dao.transacoes
     private val viewDaActivity by lazy {
         window.decorView
     }
@@ -62,12 +64,17 @@ class ListaTransacoesActivity : AppCompatActivity() {
     }
 
     private fun adiciona(transacao: Transacao) {
-        transacoes.add(transacao)
+        dao.adiciona(transacao)
         atualizaTransacoes()
     }
 
-    private fun altera(transacao: Transacao, position: Int) {
-        transacoes[position] = transacao
+    private fun remove(posicaoDaTransacao: Int) {
+        dao.remove(posicaoDaTransacao)
+        atualizaTransacoes()
+    }
+
+    private fun altera(transacao: Transacao, posicao: Int) {
+        dao.altera(transacao, posicao)
         atualizaTransacoes()
     }
 
@@ -97,16 +104,11 @@ class ListaTransacoesActivity : AppCompatActivity() {
     }
 
     override fun onContextItemSelected(item: MenuItem?): Boolean {
-        var idMenu = item?.itemId
+        val idMenu = item?.itemId
         if (idMenu == 1) {
-            val adapterMenuInfo = item?.menuInfo as AdapterView.AdapterContextMenuInfo
+            val adapterMenuInfo = item.menuInfo as AdapterView.AdapterContextMenuInfo
             remove(adapterMenuInfo.position)
         }
         return super.onContextItemSelected(item)
-    }
-
-    private fun remove(posicaoDaTransacao: Int) {
-        transacoes.removeAt(posicaoDaTransacao)
-        atualizaTransacoes()
     }
 }
